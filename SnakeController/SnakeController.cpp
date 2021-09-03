@@ -8,10 +8,10 @@
 
 #include "SnakeSegments.hpp"
 #include "SnakeWorld.hpp"
+#include "SnakePosition.hpp"
 
 namespace Snake
 {
-
 ConfigurationError::ConfigurationError()
     : std::logic_error("Bad configuration of Snake::Controller.")
 {}
@@ -20,40 +20,11 @@ UnexpectedEventException::UnexpectedEventException()
     : std::runtime_error("Unexpected event received!")
 {}
 
-bool checkControl(std::istream& istr, char control)
+bool static checkControl(std::istream& istr, char control)
 {
     char input;
     istr >> input;
     return input == control;
-}
-
-Dimension readWorldDimension(std::istream& istr)
-{
-    Dimension dimension;
-    istr >> dimension.width >> dimension.height;
-    return dimension;
-}
-
-Position readFoodPosition(std::istream& istr)
-{
-    if (not checkControl(istr, 'F')) {
-        throw ConfigurationError();
-    }
-
-    Position position;
-    istr >> position.x >> position.y;
-    return position;
-}
-
-std::unique_ptr<World> readWorld(std::istream& istr)
-{
-    if (not checkControl(istr, 'W')) {
-        throw ConfigurationError();
-    }
-
-    auto worldDimension = readWorldDimension(istr);
-    auto foodPosition = readFoodPosition(istr);
-    return std::make_unique<World>(worldDimension, foodPosition);
 }
 
 Direction readDirection(std::istream& istr)
@@ -86,16 +57,15 @@ Controller::Controller(IPort& displayPort, IPort& foodPort, IPort& scorePort, st
 {
     std::istringstream istr(initialConfiguration);
 
-    m_world = readWorld(istr);
+    m_world = m_world->readWorld(istr);
     m_segments = std::make_unique<Segments>(readDirection(istr));
 
     int length;
     istr >> length;
 
     while (length--) {
-        Position position;
-        istr >> position.x >> position.y;
-        m_segments->addSegment(position);
+    Position snakeposition;    
+    m_segments->addSegment(snakeposition.retrievePosition(istr));
     }
 
     if (length != -1) {

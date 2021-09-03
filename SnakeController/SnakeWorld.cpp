@@ -1,7 +1,9 @@
 #include "SnakeWorld.hpp"
-
+#include "SnakeController.cpp"
 namespace Snake
 {
+
+
 
 World::World(Dimension dimension, Position food)
     : m_foodPosition(food),
@@ -21,5 +23,16 @@ Position World::getFoodPosition() const
 bool World::contains(Position position) const
 {
     return m_dimension.isInside(position);
+}
+std::unique_ptr<World> readWorld(std::istream& istr)
+{
+    if (not checkControl(istr, 'W')) {
+        throw Snake::ConfigurationError();
+    }
+    Dimension snakeGameDimensions;
+    Position snakePosition;
+    auto worldDimension = snakeGameDimensions.readWorldDimension(istr);
+    auto foodPosition = snakePosition.readFoodPosition(istr);
+    return std::make_unique<World>(worldDimension, foodPosition);
 }
 } // namespace Snake

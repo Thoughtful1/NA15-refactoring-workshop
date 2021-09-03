@@ -2,6 +2,7 @@
 
 #include "SnakePosition.hpp"
 #include "SnakeDimension.hpp"
+#include <memory>
 
 namespace Snake
 {
@@ -13,6 +14,7 @@ public:
 
     void setFoodPosition(Position position);
     Position getFoodPosition() const;
+    std::unique_ptr<World> readWorld(std::istream& istr);
 
     bool contains(Position position) const;
 private:
