@@ -3,24 +3,28 @@
 namespace Snake
 {
 
-World::World(std::pair<int, int> dimension, std::pair<int, int> food)
+World::World(Dimension& dimension, Position& food)
     : m_foodPosition(food),
       m_dimension(dimension)
 {}
 
-void World::setFoodPosition(std::pair<int, int> position)
+void World::setFoodPosition(Position& position)
 {
     m_foodPosition = position;
 }
 
-std::pair<int, int> World::getFoodPosition() const
+Position& World::getFoodPosition() 
 {
     return m_foodPosition;
 }
-
-bool World::contains(int x, int y) const
+Dimension& World::getDimension() 
 {
-    return x >= 0 and x < m_dimension.first and y >= 0 and y < m_dimension.second;
+    return m_dimension;
+}
+
+bool World::contains(Position& position) const
+{
+    return position.x >= 0 and position.x < m_dimension.width and position.y >= 0 and position.y < m_dimension.height;
 }
 
 } // namespace Snake

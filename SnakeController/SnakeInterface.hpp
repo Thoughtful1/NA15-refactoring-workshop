@@ -3,6 +3,7 @@
 #include <cstdint>
 
 #include "SnakePosition.hpp"
+#include "SnakeDimension.hpp"
 
 namespace Snake
 {
